@@ -15,14 +15,13 @@ func connectToEchoServer(serverURL string, username string) error {
 	fmt.Printf("Connecting to %s\n", u.String())
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		return fmt.Errorf("[%s] ✗ Failed to connect to server: %v", time.Now().Format("15:04:05"), err)
+		return fmt.Errorf("[%s] ✗ Failed to connect to server: %v", getTimestamp(), err)
 
 	}
 
 	defer c.Close()
 
-	fmt.Printf("[%s] ✓ Connected to server\n", time.Now().Format("15:04:05"))
-
+	fmt.Printf("[%s] ✓ Connected to server\n", getTimestamp())
 	err = c.WriteMessage(websocket.TextMessage, []byte(username))
 	if err != nil {
 		return fmt.Errorf("Failed to write to server: %v", err)
@@ -31,7 +30,6 @@ func connectToEchoServer(serverURL string, username string) error {
 	fmt.Printf("[%s] ✓ Username sent: %s\n", time.Now().Format("15:04:05"), username)
 	fmt.Println("-------------------------------------------")
 	fmt.Println("Listening for messages from server...")
-	fmt.Println("-------------------------------------------\n")
 
 	for {
 		messageType, message, err := c.ReadMessage()
@@ -44,7 +42,7 @@ func connectToEchoServer(serverURL string, username string) error {
 			break
 		}
 		if messageType == websocket.TextMessage {
-			fmt.Printf("[%s] ✓ Message received: %s\n", time.Now().Format("15:04:05"), message)
+			fmt.Printf("[%s] ✓ Message received: %s\n", getTimestamp(), message)
 			fmt.Println("-------------------------------------------")
 
 		}
@@ -62,4 +60,8 @@ func getUsername() string {
 		username = username[:len(username)-1]
 	}
 	return username
+}
+
+func getTimestamp() string {
+	return time.Now().Format("27-12-2025 15:04:05")
 }
